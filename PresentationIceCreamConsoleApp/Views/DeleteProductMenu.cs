@@ -12,7 +12,7 @@ namespace PresentationIceCreamConsoleApp.Views
             _productsService = productsService;
         }
 
-        public void ShowDeleteProductMenu()
+        public async Task ShowDeleteProductMenu()
         {
             Console.Clear();
             Console.WriteLine("Delete product");
@@ -20,7 +20,7 @@ namespace PresentationIceCreamConsoleApp.Views
             Console.WriteLine("Write the productnumber of the product you wish to delete:");
             var productToDelete = Console.ReadLine()!;
 
-            var result = _productsService.DeleteProduct(productToDelete);
+            var result = await _productsService.DeleteProduct(productToDelete);
 
             if (result == true)
             {

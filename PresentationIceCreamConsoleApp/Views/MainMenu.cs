@@ -7,19 +7,21 @@
         private readonly BuyProductMenu buyProductMenu;
         private readonly EditOrDeleteCustomerMenu editOrDeleteCustomerMenu;
         private readonly EditOrDeleteProductMenu editOrDeleteProductMenu;
+        private readonly HandleOrderMenu handleOrderMenu;
 
-        public MainMenu(AddProductMenu addProductMenu, AddCustomerMenu addCustomerMenu, BuyProductMenu buyProductMenu, EditOrDeleteCustomerMenu editOrDeleteCustomerMenu, EditOrDeleteProductMenu editOrDeleteProductMenu)
+        public MainMenu(AddProductMenu addProductMenu, AddCustomerMenu addCustomerMenu, BuyProductMenu buyProductMenu, EditOrDeleteCustomerMenu editOrDeleteCustomerMenu, EditOrDeleteProductMenu editOrDeleteProductMenu, HandleOrderMenu handleOrderMenu)
         {
             this.addProductMenu = addProductMenu;
             this.addCustomerMenu = addCustomerMenu;
             this.buyProductMenu = buyProductMenu;
             this.editOrDeleteCustomerMenu = editOrDeleteCustomerMenu;
             this.editOrDeleteProductMenu = editOrDeleteProductMenu;
+            this.handleOrderMenu = handleOrderMenu;
         }
 
         bool end = true;
 
-        public void ShowMainMenu()
+        public async Task ShowMainMenu()
         {
             do
             {
@@ -30,28 +32,32 @@
                 Console.WriteLine("2. Handle accounts");
                 Console.WriteLine("3. Add a product");
                 Console.WriteLine("4. Handle products");
-                Console.WriteLine("5. Buy a product");
-                Console.WriteLine("6. Quit\n");
+                Console.WriteLine("5. Make a Order");
+                Console.WriteLine("6. Handle Orders");
+                Console.WriteLine("7. Quit\n");
                 var choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        addCustomerMenu.AddCustomerMenuShow();
+                        await addCustomerMenu.AddCustomerMenuShow();
                         break;
                     case "2":
-                        editOrDeleteCustomerMenu.ShowEditOrDeleteCustomerMenu();
+                        await editOrDeleteCustomerMenu.ShowEditOrDeleteCustomerMenu();
                         break;
                     case "3":
-                        addProductMenu.ShowAddProductMenu();
+                        await addProductMenu.ShowAddProductMenu();
                         break;
                     case "4":
-                        editOrDeleteProductMenu.ShowEditOrDeleteMenu();
+                        await editOrDeleteProductMenu.ShowEditOrDeleteMenu();
                         break;
                     case "5":
-                        buyProductMenu.ShowBuyProductMenu();
+                        await buyProductMenu.ShowBuyProductMenu();
                         break;
                     case "6":
+                        await handleOrderMenu.HandleOrderMenuShow();
+                        break;
+                    case "7":
                         AreYouShure();
                         break;
                 }
@@ -70,7 +76,6 @@
                 Console.WriteLine("See you another time!");
                 Thread.Sleep(1000);
                 end = false;
-                Environment.Exit(0);
             }
         }
 

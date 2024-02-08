@@ -13,7 +13,7 @@ namespace PresentationIceCreamConsoleApp.Views
             _productsService = productsService;
         }
 
-        public void ShowEditProductMenu()
+        public async Task ShowEditProductMenu()
         {
 
             Console.Clear();
@@ -22,7 +22,7 @@ namespace PresentationIceCreamConsoleApp.Views
             Console.WriteLine("Write the article Number of the product you wish to edit:");
             string productToEdit = Console.ReadLine()!;
 
-            var result = _productsService.UpdateProduct(productToEdit, editedProduct =>
+            var result = await _productsService.UpdateProduct(productToEdit, editedProduct =>
             {
                 Console.WriteLine("New Title:");
                 editedProduct.Title = Console.ReadLine()!;
@@ -38,6 +38,9 @@ namespace PresentationIceCreamConsoleApp.Views
                 Console.WriteLine("New Category:");
                 editedProduct.Category.CategoryName = Console.ReadLine()!;
 
+                Console.WriteLine("New Subcategory:");
+                editedProduct.Category.SubCategory.SubcategoryName = Console.ReadLine()!;
+
 
                 if (editedProduct.Manufacturer == null)
                 {
@@ -46,6 +49,18 @@ namespace PresentationIceCreamConsoleApp.Views
 
                 Console.WriteLine("New Manufacturer:");
                 editedProduct.Manufacturer.ManufacturerName = Console.ReadLine()!;
+
+                Console.WriteLine("New Image (Url)");
+                var imagesUrl = Console.ReadLine()!;
+
+                var newProductImage = new ProductImagesEntity
+                {
+                    ArticleNumber = productToEdit,
+                    Images = new ImagesEntity
+                    {
+                        ImageUrl = imagesUrl,
+                    }
+                };
             });
 
             if (result == true)

@@ -10,6 +10,7 @@ namespace Share.Entities
         public int ManufacturerId { get; set; }
 
         [Required]
+        [StringLength(50)]
         public string ManufacturerName { get; set; } = null!;
 
         public virtual ICollection<ProductEntity> Products { get; set; } = new HashSet<ProductEntity>();

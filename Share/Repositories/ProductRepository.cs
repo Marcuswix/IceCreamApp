@@ -2,8 +2,6 @@
 using Share.Contexts;
 using Share.Entities;
 using System.Diagnostics;
-using System.Linq.Expressions;
-
 
 namespace Share.Repositories
 {
@@ -16,26 +14,37 @@ namespace Share.Repositories
             _context = context;
         }
 
-        public override IEnumerable<ProductEntity> GetAll()
+        //Create
+        public override Task<ProductEntity> Create(ProductEntity entity)
+        {
+            return base.Create(entity);
+        }
+
+        //Read
+        public async Task<IEnumerable<ProductEntity>> GetAllProducts()
         {
             try
             {
-                var result = _context.Products
+                var result = await _context.Products
                     .Include(c => c.Category)
                     .Include(m => m.Manufacturer)
-                    .ToList();
-                return result; 
+                    .Include(x => x.ProductImageUrl)
+                    .ToListAsync();
+
+                return result;
+
             }
             catch (Exception ex) { Debug.WriteLine("getAllProductsRes" + ex.Message);
                 return null!; 
             }
         }
 
+        //Update
         public ProductEntity UpdateProduct(ProductEntity product)
         {
             try
             {
-                var entityToUpdate = _context.Set<ProductEntity>().Find(product.ArticleNumber);
+                var entityToUpdate = _context.Products.Find(product.ArticleNumber);
 
                 if (entityToUpdate != null)
                 {
@@ -53,6 +62,7 @@ namespace Share.Repositories
             }
         }
 
+        //Delete
         public bool DeleteProduct(ProductEntity product)
         {
             try

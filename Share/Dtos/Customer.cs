@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Share.Dtos
+﻿namespace Share.Dtos
 {
     public class Customer
     {
@@ -19,7 +12,7 @@ namespace Share.Dtos
 
         public string Password { get; set; } = null!;
 
-        public string? SteetName { get; set; } = null!;
+        public string? StreetName { get; set; } = null!;
 
         public int PostalCode { get; set; }
 

@@ -1,46 +1,59 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Share.Dtos;
+﻿using Share.Dtos;
 using Share.Entities;
 using Share.Repositories;
 using System.Diagnostics;
 using Share.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Share.Services
 {
     public class ProductsService
     {
-        private readonly CategoryRepository _categoryRepository;
         private readonly ProductRepository _productRepository;
         private readonly DataContext _dataContext;
 
-        public ProductsService(ProductRepository productRepository, CategoryRepository categoryRepository, DataContext dataContext)
+        public ProductsService(ProductRepository productRepository, DataContext dataContext)
         {
             _productRepository = productRepository;
-            _categoryRepository = categoryRepository;
             _dataContext = dataContext;
         }
 
+        //Create
         public bool CreateProduct(Product product)
         {
             try
             {
+                if (product.ArticleNumber == string.Empty)
+                {
+                    return false;
+                }
 
                     if (!_productRepository.Exists(x => x.ArticleNumber == product.ArticleNumber))
                     {
-                    var existingCategory = _dataContext.Categories.FirstOrDefault(x => x.CategoryName == product.CategoryName);
-                    
+                    var existingCategory = _dataContext.Categories
+                        .Include(c => c.SubCategory)
+                        .FirstOrDefault(x => x.CategoryName == product.CategoryName);
+
                     if (existingCategory == null)
                     {
                         existingCategory = new CategoryEntity
                         {
                             CategoryName = product.CategoryName,
+                            SubCategory = new SubCategoryEntity
+                            {
+                                SubcategoryName = product.SubcategoryName!
+                            }
                         };
 
                         _dataContext.Categories.Add(existingCategory);
                     }
+                    else if (existingCategory.SubCategory == null)
+                    {
+                        _dataContext.Entry(existingCategory).Reference(c => c.SubCategory).Load();
+                    }
 
-                    var existingManufacturer = _dataContext.Manufacturer.FirstOrDefault(x => x.ManufacturerName == product.ManufacturerName);
+                    var existingManufacturer = _dataContext.Manufacturer
+                        .FirstOrDefault(x => x.ManufacturerName == product.ManufacturerName);
 
                     if (existingManufacturer == null)
                     {
@@ -50,7 +63,19 @@ namespace Share.Services
                         };
 
                         _dataContext.Manufacturer.Add(existingManufacturer);
+                    }
 
+                    var existingImages = _dataContext.Images
+                        .FirstOrDefault(x => x.ImageUrl == product.ImageUrl);
+
+                    if (existingImages == null)
+                    {
+                        existingImages = new ImagesEntity
+                        {
+                            ImageUrl = product.ImageUrl!
+                        };
+
+                        _dataContext?.Images.Add(existingImages);
                     }
 
                     var productEntity = new ProductEntity
@@ -61,53 +86,61 @@ namespace Share.Services
                         SpecificationAsJson = product.SpecificationAsJson,
                         Price = product.Price,
                         Category = existingCategory,
-                        Manufacturer = existingManufacturer
+                        Manufacturer = existingManufacturer,
+                        ProductImageId = existingImages.Id
                     };
 
-                                var result = _productRepository.Create(productEntity);
+                           var result = _productRepository.Create(productEntity);
 
-                                if (result != null)
-                                {
-                                    return true;
-                                }
-                }
+                            if (result != null)
+                            {
+                                return true;
+                            }
+                            else { return false; }
+                    }
             }
             catch (Exception ex) { Debug.WriteLine("CreateProductProdServ" + ex.Message); }
 
             return false;
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        //Read
+        public async Task<IEnumerable<Product>> GetAllProducts()
         {
             var products = new List<Product>();
 
             try 
             {
-                var result = _productRepository.GetAll();
+                var result = await _productRepository.GetAllProducts();
 
-                foreach (var item in result)
+                if (result != null)
                 {
-                    products.Add(new Product
+                    foreach (var item in result)
                     {
-                        ArticleNumber = item.ArticleNumber,
-                        Title = item.Title,
-                        Description = item.Description,
-                        SpecificationAsJson = item.SpecificationAsJson,
-                        Price = item.Price,
-                        CategoryName = item.Category.CategoryName,
-                        ManufacturerName = item.Manufacturer.ManufacturerName
-                    });
-                 }
+                        products.Add(new Product
+                        {
+                            ArticleNumber = item.ArticleNumber,
+                            Title = item.Title,
+                            Description = item.Description,
+                            SpecificationAsJson = item.SpecificationAsJson,
+                            Price = item.Price,
+                            CategoryName = item.Category?.CategoryName ?? string.Empty,
+                            SubcategoryName = item.Category?.SubCategory?.SubcategoryName ?? string.Empty,
+                            ManufacturerName = item.Manufacturer.ManufacturerName,
+                            ImageUrl = item.ProductImageUrl?.ToString() ?? string.Empty,
+                        });
+                    }
+                }
             }
             catch (Exception ex) { Debug.WriteLine("GetAllProductsProdServ" + ex.Message); }
             return products;
         }
 
-        public ProductEntity GetOneProduct(string articleNumber)
+        public async Task<ProductEntity> GetOneProduct(string title)
         {
             try
             {
-                var result = _productRepository.GetOne(x => x.ArticleNumber == articleNumber);
+                var result = await _productRepository.GetOne(x => x.Title == title);
 
                 if (result != null) 
                 {
@@ -123,11 +156,12 @@ namespace Share.Services
             }
         }
 
-        public bool UpdateProduct(string articleNumber, Action<ProductEntity> updateAction)
+        //Update
+        public async Task<bool> UpdateProduct(string articleNumber, Action<ProductEntity> updateAction)
         {
             try
             {
-                var existingProduct = _productRepository.GetOne(x => x.ArticleNumber == articleNumber);
+                var existingProduct = await _productRepository.GetOne(x => x.ArticleNumber == articleNumber);
 
                 if (existingProduct != null)
                 {
@@ -147,11 +181,12 @@ namespace Share.Services
             return false;
         }
 
-        public bool DeleteProduct(string articleNumber) 
+        //Delete
+        public async Task<bool> DeleteProduct(string articleNumber) 
         {
             try 
             {
-                var productToDelete = _productRepository.GetOne(x => x.ArticleNumber == articleNumber);
+                var productToDelete = await _productRepository.GetOne(x => x.ArticleNumber == articleNumber);
 
                 if(productToDelete != null)
                 {
@@ -164,22 +199,5 @@ namespace Share.Services
                 return false; 
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
-
 }

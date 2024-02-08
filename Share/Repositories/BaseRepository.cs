@@ -1,12 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using Share.Contexts;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Share.Repositories
 {
@@ -14,30 +9,31 @@ namespace Share.Repositories
     {
         private readonly DataContext _context;
 
-        protected BaseRepository(DataContext context) 
+        protected BaseRepository(DataContext context)
         {
             _context = context;
         }
 
-        //Virtual gör så att koden går att modifiera
-        public virtual TEntity Create(TEntity entity)
+        //Virtual gör så att koden går att modifiera. _context.Set<TEntity> gör att värden sätts för just den
+        //bestämda entiteten .Add lägger till Entiteten.
+        public virtual async Task<TEntity> Create(TEntity entity)
         {
             try
             {
-                _context.Set<TEntity>().Add(entity);
-                _context.SaveChanges();
+                await _context.Set<TEntity>().AddAsync(entity);
+                await _context.SaveChangesAsync();
                 return entity;
             }
             catch (Exception ex) { Debug.WriteLine("BaseResCreate" + ex.Message);
-                return null!;
+            return null!;
             }
         }
 
-        public virtual IEnumerable<TEntity> GetAll() 
+        public virtual async Task<List<TEntity>> GetAll() 
         {
             try
             {
-                var result = _context.Set<TEntity>().ToList();
+                var result = await _context.Set<TEntity>().ToListAsync();
                 return result;
             }
             catch (Exception ex)
@@ -47,11 +43,11 @@ namespace Share.Repositories
             }
         }
 
-        public virtual TEntity GetOne(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<TEntity> GetOne(Expression<Func<TEntity, bool>> predicate)
         {
             try
             {
-                var result = _context.Set<TEntity>().FirstOrDefault(predicate);
+                var result = await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
 
                 if (result != null)
                 {
@@ -67,49 +63,6 @@ namespace Share.Repositories
             }
         }
 
-        public virtual TEntity Update(TEntity entity)
-        {
-            try
-            {
-                var entityToUpdate = _context.Set<TEntity>().Find(entity);
-
-                if (entityToUpdate != null)
-                {
-                    _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
-                    _context.SaveChanges();
-                    return entityToUpdate;
-                }
-                return null!;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("BaseResUpdate: " + ex.Message);
-                return null!;
-            }
-        }
-
-        public virtual bool Delete(Expression<Func<TEntity, bool>> predicate)
-        {
-            try
-            {
-                var entityToDelete = _context.Set<TEntity>().Find(predicate);
-
-                if(entityToDelete != null)
-                {
-                    _context.Remove(entityToDelete);
-                    _context.SaveChanges();
-                    return true;
-                }
-                return false;
-
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("BaseResDelete" + ex.Message);
-                return false;
-            }
-        }
-
         public virtual bool Exists(Expression<Func<TEntity, bool>> predicate)
         {
             try 
@@ -121,5 +74,27 @@ namespace Share.Repositories
                 return false;
             }
         }
+
+        //Används inte...
+        //public virtual TEntity Update(TEntity entity)
+        //{
+        //    try
+        //    {
+        //        var entityToUpdate = _context.Set<TEntity>().Find(entity);
+
+        //        if (entityToUpdate != null)
+        //        {
+        //            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+        //            _context.SaveChanges();
+        //            return entityToUpdate;
+        //        }
+        //        return null!;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("BaseResUpdate: " + ex.Message);
+        //        return null!;
+        //    }
+        //}
     }
 }

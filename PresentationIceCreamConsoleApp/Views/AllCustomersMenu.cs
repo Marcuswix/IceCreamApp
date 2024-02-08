@@ -11,7 +11,7 @@ namespace PresentationIceCreamConsoleApp.Views
             this.customerService = customerService;
         }
 
-        public void ShowAllCustomersMenu()
+        public async Task ShowAllCustomersMenu()
         {
             bool end = true;
 
@@ -39,7 +39,7 @@ namespace PresentationIceCreamConsoleApp.Views
             Console.WriteLine("< All the Accounts >");
             Console.WriteLine("####################\n");
 
-            var customer = customerService.GetAllCustomers();
+            var customer = await customerService.GetAllCustomers();
 
             if (customer != null)
             {
@@ -49,7 +49,7 @@ namespace PresentationIceCreamConsoleApp.Views
 
                 foreach (var c in customer)
                 {
-                    Console.WriteLine($"Id: {c.Id}\nName: {c.FirstName} {c.LastName}\nEmail: {c.Email}\nPassword: {c.Password}\nAddress: {c.SteetName}, {c.PostalCode}, {c.City}\n");
+                    Console.WriteLine($"Id: {c.Id}\nName: {c.FirstName} {c.LastName}\nEmail: {c.Email}\nPassword: {c.Password}\nAddress: {c.StreetName}, {c.PostalCode}, {c.City}\n");
                     Console.WriteLine("##########################\n");
                 }
             }

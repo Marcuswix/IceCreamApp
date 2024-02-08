@@ -1,10 +1,5 @@
 ﻿using Share.Dtos;
 using Share.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PresentationIceCreamConsoleApp.Views
 {
@@ -17,7 +12,7 @@ namespace PresentationIceCreamConsoleApp.Views
             _customerService = customerService;
         }
 
-        public void AddCustomerMenuShow()
+        public async Task AddCustomerMenuShow()
         {
             var customer = new Customer();
 
@@ -34,7 +29,7 @@ namespace PresentationIceCreamConsoleApp.Views
                 Console.WriteLine("4. Password: ");
                 customer.Password = Console.ReadLine()!;
                 Console.WriteLine("5. Street Name: ");
-                customer.SteetName = Console.ReadLine()!;
+                customer.StreetName = Console.ReadLine()!;
                 Console.WriteLine("6. Postal Code: ");
 
                 if (int.TryParse(Console.ReadLine(), out int postalCode) && postalCode >= 10000 && postalCode <= 99999)
@@ -43,7 +38,7 @@ namespace PresentationIceCreamConsoleApp.Views
                 }
                 else
                 {
-                    Console.WriteLine("You must enter a valid postal code (ex. 12345)");
+                    Console.WriteLine("Not a valid postal code... Edit your profil to correct it.(ex. 12345)");
                 }
                 Console.WriteLine("7. City: ");
                 customer.City = Console.ReadLine()!;

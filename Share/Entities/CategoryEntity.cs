@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Share.Entities
 {
@@ -11,6 +12,10 @@ namespace Share.Entities
 
         [Required]
         public string CategoryName { get; set; } = null!;
+
+        [ForeignKey(nameof(SubCategory))]
+        public int SubCategoryId { get; set; }
+        public virtual SubCategoryEntity SubCategory { get; set; } = null!;
 
         public virtual ICollection<ProductEntity> Products { get; set; } = new HashSet<ProductEntity>();
     }

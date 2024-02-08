@@ -7,15 +7,13 @@ namespace PresentationIceCreamConsoleApp.Views
     public class EditCustomer
     {
         private readonly CustomerService _customerService;
-        private readonly Customer _customer;
 
-        public EditCustomer(CustomerService customerService, Customer customer)
+        public EditCustomer(CustomerService customerService)
         {
             _customerService = customerService;
-            _customer = customer;
         }
 
-        public void ShowEditCustomer()
+        public async Task ShowEditCustomer()
         {
             Console.Clear();
             Console.WriteLine("<Edit Account>");
@@ -23,7 +21,7 @@ namespace PresentationIceCreamConsoleApp.Views
             Console.WriteLine("Write the email to edit an account: ");
             string customerToFind = Console.ReadLine()!;
 
-            var result = _customerService.UpdateCustomer(customerToFind, editedCustomer =>
+            var result = await _customerService.UpdateCustomer(customerToFind, editedCustomer =>
             {
                 Console.Clear();
                 Console.WriteLine("Enter new first name: ");
@@ -44,7 +42,7 @@ namespace PresentationIceCreamConsoleApp.Views
                 }
 
                 Console.WriteLine("Enter new Street Name: ");
-                editedCustomer.Address.SteetName = Console.ReadLine()!;
+                editedCustomer.Address.StreetName = Console.ReadLine()!;
 
                 Console.WriteLine("Enter new Postal code: ");
 

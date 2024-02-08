@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PresentationIceCreamConsoleApp.Views
+﻿namespace PresentationIceCreamConsoleApp.Views
 {
     public class EditOrDeleteCustomerMenu
     {
@@ -19,7 +13,7 @@ namespace PresentationIceCreamConsoleApp.Views
             _allCustomersMenu = allCustomersMenu;
         }
 
-        public void ShowEditOrDeleteCustomerMenu()
+        public async Task ShowEditOrDeleteCustomerMenu()
         {
             bool end = true;
             do
@@ -37,13 +31,13 @@ namespace PresentationIceCreamConsoleApp.Views
                 switch (choice)
                 {
                     case "1":
-                        _editCustomer.ShowEditCustomer();
+                        await _editCustomer.ShowEditCustomer();
                         break;
                     case "2":
-                        _deleteCustomerMenu.ShowDeleteCustomer();
+                        await _deleteCustomerMenu.ShowDeleteCustomer();
                         break;
                     case "3":
-                        _allCustomersMenu.ShowAllCustomersMenu();
+                        await _allCustomersMenu.ShowAllCustomersMenu();
                         break;
                     case "4":
                         end = false;

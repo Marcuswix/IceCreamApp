@@ -14,6 +14,10 @@
 
         public string CategoryName { get; set; } = null!;
 
+        public string? SubcategoryName { get; set; } = null!;   
+
         public string ManufacturerName { get; set; } = null!;
+
+        public string? ImageUrl { get; set;} = null!;
     }
 }

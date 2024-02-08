@@ -1,9 +1,4 @@
 ﻿using Share.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PresentationIceCreamConsoleApp.Views
 {
@@ -16,7 +11,7 @@ namespace PresentationIceCreamConsoleApp.Views
             _customerService = customerService;
         }
 
-        public void ShowDeleteCustomer()
+        public async Task ShowDeleteCustomer()
         {
             while (true)
             {

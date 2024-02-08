@@ -37,7 +37,7 @@ namespace Share.Migrations
                     b.Property<int>("PostalCode")
                         .HasColumnType("int");
 
-                    b.Property<string>("SteetName")
+                    b.Property<string>("StreetName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -58,10 +58,15 @@ namespace Share.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("int");
+
                     b.HasKey("CategoryId");
 
                     b.HasIndex("CategoryName")
                         .IsUnique();
+
+                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -79,7 +84,7 @@ namespace Share.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -97,7 +102,28 @@ namespace Share.Migrations
 
                     b.HasIndex("AddressId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("Share.Entities.ImagesEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Share.Entities.ManufacturerEntity", b =>
@@ -110,7 +136,8 @@ namespace Share.Migrations
 
                     b.Property<string>("ManufacturerName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ManufacturerId");
 
@@ -137,6 +164,9 @@ namespace Share.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("money");
 
+                    b.Property<int>("ProductImageId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SpecificationAsJson")
                         .HasColumnType("nvarchar(max)");
 
@@ -147,11 +177,63 @@ namespace Share.Migrations
 
                     b.HasKey("ArticleNumber");
 
+                    b.HasIndex("ArticleNumber")
+                        .IsUnique();
+
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ManufacturerId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Share.Entities.ProductImagesEntity", b =>
+                {
+                    b.Property<string>("ArticleNumber")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("ImageId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("ArticleNumber", "ImageId");
+
+                    b.HasIndex("ImageId");
+
+                    b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("Share.Entities.SubategoryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("SubcategoryName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubcategoryName")
+                        .IsUnique();
+
+                    b.ToTable("Subcategories");
+                });
+
+            modelBuilder.Entity("Share.Entities.CategoryEntity", b =>
+                {
+                    b.HasOne("Share.Entities.SubategoryEntity", "SubCategory")
+                        .WithMany("Category")
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("Share.Entities.CustomerEntity", b =>
@@ -184,6 +266,25 @@ namespace Share.Migrations
                     b.Navigation("Manufacturer");
                 });
 
+            modelBuilder.Entity("Share.Entities.ProductImagesEntity", b =>
+                {
+                    b.HasOne("Share.Entities.ProductEntity", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ArticleNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Share.Entities.ImagesEntity", "Images")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Images");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Share.Entities.AddressEntity", b =>
                 {
                     b.Navigation("Customer");
@@ -194,9 +295,24 @@ namespace Share.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Share.Entities.ImagesEntity", b =>
+                {
+                    b.Navigation("ProductImages");
+                });
+
             modelBuilder.Entity("Share.Entities.ManufacturerEntity", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Share.Entities.ProductEntity", b =>
+                {
+                    b.Navigation("ProductImages");
+                });
+
+            modelBuilder.Entity("Share.Entities.SubategoryEntity", b =>
+                {
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

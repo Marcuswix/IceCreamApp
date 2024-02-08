@@ -1,6 +1,7 @@
 ﻿using Share.Contexts;
 using Share.Dtos;
 using Share.Entities;
+using Share.Helpers;
 using Share.Repositories;
 using System.Diagnostics;
 
@@ -19,6 +20,7 @@ namespace Share.Services
             _dataContext = dataContext;
         }
 
+        //Create
         public bool CreateCustomer(Customer customer)
         {
             try
@@ -32,20 +34,19 @@ namespace Share.Services
 
                     if (!_customerRepository.Exists(x => x.Email == customer.Email))
                     {
-                        var customerEntity = new CustomerEntity
+                    var customerEntity = new CustomerEntity
+                    {
+                        Id = customer.Id,
+                        FirstName = customer.FirstName,
+                        LastName = customer.LastName,
+                        Email = customer.Email,
+                        Password = PasswordHandler.GenerateSecurePassword(customer.Password),
+                        Address = new AddressEntity
                         {
-                            Id = customer.Id,
-                            FirstName = customer.FirstName,
-                            LastName = customer.LastName,
-                            Email = customer.Email,
-                            Password = customer.Password,
-                            Address = new AddressEntity
-                            {
-                                SteetName = customer.SteetName,
+                                StreetName = customer.StreetName,
                                 PostalCode = customer.PostalCode,
                                 City = customer.City,
-                            }
-
+                        }
                         };
 
                         var result = _customerRepository.Create(customerEntity);
@@ -57,17 +58,17 @@ namespace Share.Services
                     }
             }
             catch (Exception ex) { Debug.WriteLine("CreateCustomerProdServ" + ex.Message); }
-
             return false;
         }
 
-        public IEnumerable<Customer> GetAllCustomers()
+        //Read
+        public async Task<IEnumerable<Customer>> GetAllCustomers()
         {
             var customers = new List<Customer>();
 
             try
             {
-                var result = _customerRepository.GetAll();
+                var result = await _customerRepository.GetAll();
 
                 foreach (var c in result)
                 {
@@ -82,11 +83,11 @@ namespace Share.Services
                         
                         if (c.AddressId != null)
                         {
-                            var address = _addressRepository.GetAll();
+                            var address = await _addressRepository.GetAll();
 
                             if (address != null)
                             {
-                            customer.SteetName = c.Address.SteetName;
+                            customer.StreetName = c.Address.StreetName;
                             customer.PostalCode = c.Address.PostalCode;
                             customer.City = c.Address.City;
                             }
@@ -98,11 +99,26 @@ namespace Share.Services
             {
                 Debug.WriteLine("GetAllCustomersService: " + ex.Message);
             }
-
             return customers;
         }
 
+        public async Task<CustomerEntity> GetACustomer(string email)
+        {
+            try 
+            {
+                if(email != null)
+                {
+                    var result = await _customerRepository.GetOne(x => x.Email == email);
+                    return result;
+                }
+                return null!;
+            }
+            catch (Exception ex) { Debug.WriteLine("GetACustomer" + ex.Message);
+                return null!;
+            }
+        }
 
+        //Delete
         public bool DeleteCustomer(string email)
         {
             try
@@ -121,15 +137,22 @@ namespace Share.Services
             }
         }
 
-        public bool UpdateCustomer(string email, Action<CustomerEntity> updateAction)
+        //Update
+        public async Task<bool> UpdateCustomer(string email, Action<CustomerEntity> updateAction)
         {
             try
             {
-                var existingCustomer = _customerRepository.GetOne(x => x.Email == email);
+                var existingCustomer = await _customerRepository.GetOne(x => x.Email == email);
 
                 if (existingCustomer != null)
                 {
                     updateAction(existingCustomer);
+
+                    if(!string.IsNullOrEmpty(existingCustomer.Password))
+                    {
+                        existingCustomer.Password = PasswordHandler.GenerateSecurePassword(existingCustomer.Password);
+                    }
+
                     var result = _customerRepository.UpdateCustomer(existingCustomer);
                     if (result != null)
                     {
@@ -141,9 +164,7 @@ namespace Share.Services
             {
                 Debug.WriteLine("UpdateCustomerProdServ" + ex.Message);
             }
-
             return false;
         }
-
     }
 }

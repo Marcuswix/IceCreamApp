@@ -1,14 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Share.Contexts;
 using Share.Entities;
-using Share.Dtos;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Share.Repositories
 {
@@ -25,7 +18,7 @@ namespace Share.Repositories
         {
             try
             {
-                var entityToDelete = _context.Set<CustomerEntity>().FirstOrDefault(x => x.Email == email);
+                var entityToDelete = _context.Customer.FirstOrDefault(x => x.Email == email);
 
                 if (entityToDelete != null)
                 {
@@ -42,12 +35,12 @@ namespace Share.Repositories
             }
         }
 
-        public override bool Exists(Expression<Func<CustomerEntity, bool>> predicate)
+        public bool Exists(CustomerEntity customer)
         {
             try
             {
-                var result = _context.Set<CustomerEntity>().Any(predicate);
-                return result;
+                _context.Customer.FirstOrDefault(c => c.Email == customer.Email);
+                return true;
             }
             catch (Exception ex)
             {
@@ -60,7 +53,7 @@ namespace Share.Repositories
         {
             try
             {
-                var entityToUpdate = _context.Set<CustomerEntity>().Find(customer.Id);
+                var entityToUpdate = _context.Customer.Find(customer.Id);
 
                 if (entityToUpdate != null)
                 {
@@ -77,7 +70,5 @@ namespace Share.Repositories
                 return null!;
             }
         }
-
-
     }
 }

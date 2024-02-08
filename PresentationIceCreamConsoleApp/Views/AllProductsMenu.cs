@@ -11,9 +11,9 @@ namespace PresentationIceCreamConsoleApp.Views
             _productsService = productsService;
         }
 
-        public void ShowAllProductsMenu()
+        public async Task ShowAllProductsMenu()
         {
-            var products = _productsService.GetAllProducts();
+            var products = await _productsService.GetAllProducts();
 
             Console.Clear();
             Console.WriteLine("All our products");
@@ -22,8 +22,8 @@ namespace PresentationIceCreamConsoleApp.Views
             foreach (var p in products)
             {
 
-                Console.WriteLine($"\nArticle Number: {p.ArticleNumber}\nTitle: {p.Title}\nCategory: {p.CategoryName}\nPrice: {p.Price}\nManufacturer: {p.ManufacturerName}");
-                Console.WriteLine("#################\n");
+                Console.WriteLine($"\nArticle Number: {p.ArticleNumber}\nTitle: {p.Title}\nCategory: {p.CategoryName}\nSubcategory: {p.SubcategoryName}\nPrice: {p.Price}\nManufacturer: {p.ManufacturerName}");
+                Console.WriteLine("\n#################\n");
             }
 
             Console.ReadKey();

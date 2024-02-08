@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Share.Entities
 {
@@ -28,6 +24,6 @@ namespace Share.Entities
         [ForeignKey(nameof(AddressEntity))]
         public int AddressId { get; set; }
 
-        public AddressEntity Address { get; set; } = null!;
+        public virtual AddressEntity Address { get; set; } = null!;
     }
 }

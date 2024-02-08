@@ -11,6 +11,5 @@ namespace Share.Repositories
         {
             _context = context;
         }
-
     }
 }

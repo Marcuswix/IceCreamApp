@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Share.Entities
 {
@@ -13,7 +8,7 @@ namespace Share.Entities
         public int AddressId {  get; set; }
 
         [Required]
-        public string SteetName { get; set; } = null!;
+        public string StreetName { get; set; } = null!;
 
         [Required]
         public int PostalCode { get; set; }

@@ -20,14 +20,16 @@ namespace Share.Entities
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
 
+        public int? ProductImageId { get; set; }
+        public virtual ICollection<ProductImagesEntity>? ProductImageUrl { get; set; } = new List<ProductImagesEntity>();
+
         [Required]
         [ForeignKey(nameof(CategoryEntity))]
         public int CategoryId { get; set; }
-        public CategoryEntity Category { get; set; } = null!;
+        public virtual CategoryEntity Category { get; set; } = null!;
 
-        [ForeignKey(nameof(ManufacturerEntity))]
+        [ForeignKey(nameof(Manufacturer))]
         public int ManufacturerId {  get; set; }
-        public ManufacturerEntity Manufacturer { get; set; } = null!;
-        
+        public virtual ManufacturerEntity Manufacturer { get; set; } = null!;
     }
 }
