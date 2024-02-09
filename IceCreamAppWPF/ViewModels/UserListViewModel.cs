@@ -4,7 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using Share.Dtos;
 using Share.Services;
 using System.Windows;
-
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace IceCreamAppWPF.ViewModels
 {
@@ -12,108 +13,76 @@ namespace IceCreamAppWPF.ViewModels
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly CustomerService _customerService;
+        private ObservableCollection<Customer> _customers;
 
         public UserListViewModel(IServiceProvider serviceProvider, CustomerService customerService)
         {
             _serviceProvider = serviceProvider;
             _customerService = customerService;
+            Customers = new ObservableCollection<Customer>();
         }
 
         [RelayCommand]
-        public void NavigateToWelcomePage()
+        public void NavigateToMainMenu()
         {
             var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
 
-            //Går till
-            mainViewModel.CurrentViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+            // Går till huvudmenyn
+            mainViewModel.CurrentViewModel = _serviceProvider.GetRequiredService<WelcomePageViewModel>();
         }
 
-        private string? _firstName;
-        public string? FirstName
+        public ObservableCollection<Customer> Customers
         {
-            get => _firstName;
-            set => SetProperty(ref _firstName, value); 
-        } 
-
-        private string? _lastName;
-        public string? LastName
-        {
-            get => _lastName;
-            set => SetProperty(ref _lastName, value);
-        }
-
-        private string? _email;
-        public string? Email
-        {
-            get => _email;
-            set => SetProperty(ref _email, value);
-        }
-
-        private string? _password;
-        public string? Password
-        {
-            get => _password;
-            set => SetProperty(ref _password, value);
-        }
-
-        private string? _streetName;
-        public string? StreetName
-        {
-            get => _streetName;
-            set => SetProperty(ref _streetName, value);
-        }
-
-        private string? _city;
-        public string? City
-        {
-            get => _city;
-            set => SetProperty(ref _city, value);
-        }
-
-        private int _postalCode;
-        public int PostalCode
-        {
-            get => _postalCode;
-            set => SetProperty(ref _postalCode, value);
+            get => _customers;
+            set => SetProperty(ref _customers, value);
         }
 
         [RelayCommand]
-        public void AddCustomer()
+        public void NavigateToAddCustomer()
         {
-            //Result.Content = "";
+            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
 
-            var customer = new Customer()
-            {
-                FirstName = FirstName!,
-                LastName = LastName!,
-                Email = Email!,
-                Password = Password!,
-                StreetName = StreetName,
-                PostalCode = PostalCode,
-                City = City,
-            };
+            // Går till sidan för att lägga till en ny kund
+            mainViewModel.CurrentViewModel = _serviceProvider.GetRequiredService<AddCustomerViewModel>();
+        }
 
-            var result = _customerService.CreateCustomer(customer);
-            ClearForm();
+        [RelayCommand]
+        public void NavigateToEditCustomer(Customer customer)
+        {
+            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+            var editCustomerViewModel = _serviceProvider.GetRequiredService<EditCustomerViewModel>();
 
-            if (result == true)
+            // Ladda den aktuella kunden och skicka med den till redigeringsvyn
+            editCustomerViewModel.LoadCustomer(customer);
+
+            // Går till redigeringsvyn
+            mainViewModel.CurrentViewModel = editCustomerViewModel;
+        }
+
+        [RelayCommand]
+        public async Task ShowAllCustomers()
+        {
+            var result = await _customerService.GetAllCustomers();
+
+            if (result != null)
             {
-                //Result.Content = "Customer Added";
-            }
-            else
-            {
-                //Result.Content = "Something went wrong";
+                Customers.Clear();
+                foreach (var customer in result)
+                {
+                    Customers.Add(customer);
+                }
             }
         }
 
-        public void ClearForm()
+        [RelayCommand]
+        public async Task DeleteCustomer(string email)
         {
-            FirstName = "";
-            LastName = "";
-            Email = "";
-            Password = "";
-            StreetName = "";
-            City = "";
+            var result = _customerService.DeleteCustomer(email);
+
+            if (result)
+            {
+                await ShowAllCustomers();
+            }
         }
-}
+    }
 }

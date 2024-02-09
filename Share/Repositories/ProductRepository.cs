@@ -27,6 +27,7 @@ namespace Share.Repositories
             {
                 var result = await _context.Products
                     .Include(c => c.Category)
+                    .Include(c => c.Category.SubCategory)
                     .Include(m => m.Manufacturer)
                     .Include(x => x.ProductImageUrl)
                     .ToListAsync();

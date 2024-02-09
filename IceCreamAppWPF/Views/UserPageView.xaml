@@ -7,10 +7,12 @@
              
              xmlns:viewmodels="clr-namespace:IceCreamAppWPF.ViewModels"
              xmlns:views="clr-namespace:IceCreamAppWPF.Views"
-             d:DataContext="{d:DesignInstance Type=viewmodels:UserListViewModel}"
              
+             d:DataContext="{d:DesignInstance Type=viewmodels:UserListViewModel}"
+
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="400">
+
     <Grid Margin=" 20" Background="WhiteSmoke">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
@@ -24,33 +26,56 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2">
             <Label FontSize="20" HorizontalAlignment="Center" Margin="0, 0, 0, 10">Handle Customers</Label>
-            <Button Content="Add A Customer" Grid.Column="0" Grid.Row="1" Padding="5" Margin="10" Background="#FFD6E6" Command="{Binding AddCustomerCommand}"></Button>
-            <Button Content="Show and Handle Customers" Grid.Column="1" Grid.Row="1" Padding="5" Margin="10" Background="#E7D3FF"></Button>
-            <Button Content="Back to Main Menu" Grid.Column="1" Grid.Row="1" Padding="5" Margin="10" Background="#D6C8DE" Command="{Binding NavigateToWelcomePageCommand}"></Button>
-            <!--<Label x:Name="{Binding Result}" HorizontalAlignment="Center" Margin="2"></Label>-->
+            <Button Content="Add A Customer" Grid.Column="0" Grid.Row="1" Padding="5" Margin="10" Background="#FFD6E6" Command="{Binding NavigateToAddCustomerCommand}"></Button>
+            <Button Content="Show and Handle Customers" Grid.Column="1" Grid.Row="1" Padding="5" Margin="10" Background="#E7D3FF" Command="{Binding ShowAllCustomersCommand}"></Button>
+            <Button Content="Back to Main Menu" Grid.Column="1" Grid.Row="1" Padding="5" Margin="10" Background="#D6C8DE" Command="{Binding NavigateToMainMenuCommand}"></Button>
         </StackPanel>
-
-        <ListView Grid.Row="4" Grid.ColumnSpan="2" Margin="10">
+        
+        <ListView Grid.Row="4" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding Customers}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <Label Margin="5">First Name:</Label>
-                        <TextBlock x:Name="FirstName"  Text="{Binding FirstName, Mode=TwoWay}"></TextBlock>
-                        <Label Margin="5">Last Name:</Label>
-                        <TextBlock x:Name="LastName" Text="{Binding LastName, Mode=TwoWay}"></TextBlock>
-                        <Label Margin="5">Email:</Label>
-                        <TextBlock x:Name="Email"  Text="{Binding Email, Mode=TwoWay}"></TextBlock>
-                        <Label Margin="5">Password:</Label>
-                        <TextBlock x:Name="Password"  Text="{Binding Password, Mode=TwoWay}"></TextBlock>
-                        <Label Margin="5">StreetName:</Label>
-                        <TextBlock x:Name="StreetName" Text="{Binding StreetName, Mode=TwoWay}"></TextBlock>
-                        <Label Margin="5">Postal Code:</Label>
-                        <TextBlock x:Name="PostalCode" Text="{Binding PostalCode, Mode=TwoWay}"></TextBlock>
-                        <Label Margin="5">City:</Label>
-                        <TextBlock x:Name="City" Text="{Binding PostalCode, Mode=TwoWay}"></TextBlock>
-                        <Button Content="Delete"></Button>
-                        <Button Content="Edit"></Button>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                    <StackPanel Margin="5, 5">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock>
+                            <Run Text="Name: " FontWeight="Bold" />
+                            <Run Text="{Binding FirstName}" />
+                            <Run Text=" " />
+                            <Run Text="{Binding LastName}" />
+                            </TextBlock>
+                        </StackPanel>
+                            <StackPanel Grid.Column="0">
+                            <TextBlock>
+                                <Run Text="Email: " FontWeight="Bold"></Run>
+                                <Run Text="{Binding Email}"></Run>
+                            </TextBlock>
+                        </StackPanel>
+                            <StackPanel Grid.Column="0">
+                            <TextBlock>
+                                <Run Text="Password: " FontWeight="Bold"></Run>
+                                <Run Text="{Binding Password}"></Run>
+                            </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0">
+                            <TextBlock>
+                                <Run Text="Address: " FontWeight="Bold"></Run>
+                                <Run Text="{Binding StreetName}"></Run>
+                                <Run Text="{Binding PostalCode}"></Run>
+                                <Run Text="{Binding City}"></Run>
+                            </TextBlock>
+                        </StackPanel>
+                            <Button Content="Delete" Padding="5" Margin="15, 15, 15, 5" Grid.Column="1" Background="#CC181F" Foreground="White" Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding Email}"></Button>
+                            <Button Content="Edit" Padding="5" Margin="15, 5, 15, 0" Grid.Column="1" Background="#92BEF7" 
+                            Command="{Binding DataContext.NavigateToEditCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            CommandParameter="{Binding}">
+                            </Button>
+                            <TextBlock Margin="0, 5, 0, 0">---------------------------------------------------------------------------------</TextBlock>
                     </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

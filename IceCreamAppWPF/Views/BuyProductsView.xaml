@@ -25,29 +25,55 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2">
-            <Label FontSize="20" HorizontalAlignment="Center" Margin="0, 0, 0, 10">Buy Products</Label>
+            <Label FontSize="20" HorizontalAlignment="Center" Margin="0, 0, 0, 10">Ourer Products</Label>
             <Button Content="Back to Main Menu" Grid.Column="1" Grid.Row="1" Padding="5" Margin="10" Background="#D6C8DE" Command="{Binding NavigateToMainMenuCommand}"></Button>
         </StackPanel>
 
-        <ListView Grid.Row="4" Grid.ColumnSpan="2" Margin="10">
+        <ListView Grid.Row="4" Grid.ColumnSpan="2" Margin="5" ItemsSource="{Binding Products}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <Label Margin="5">Product Name:</Label>
-                        <TextBlock Text="Marcus Ollesson}"></TextBlock>
-                        <Label Margin="5">Category:</Label>
-                        <TextBlock Text="oklart@oklart.se"></TextBlock>
-                        <Label Margin="5">Description:</Label>
-                        <TextBlock Text="Oklart"></TextBlock>
-                        <Label Margin="5">Manufacturer:</Label>
-                        <TextBlock Text="Address"></TextBlock>
-                        <Label Margin="5">Price:</Label>
-                        <TextBlock Text="Address"></TextBlock>
-                        <Label Margin="5">Price:</Label>
-                        <Label>Quantity: </Label>
-                        <TextBox></TextBox>
-                        <Button Content="Buy"></Button>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="5, 5">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock>
+                <Run Text="Name: " FontWeight="Bold" />
+                <Run Text="{Binding ArticleNumber}" />
+                <Run Text=" " />
+                <Run Text="{Binding Title}" />
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock>
+                    <Run Text="Category: " FontWeight="Bold"></Run>
+                    <Run Text="{Binding CategoryName}"></Run>
+                                </TextBlock>
+                                <TextBlock>
+                    <Run Text="Subcategory: " FontWeight="Bold"></Run>
+                    <Run Text="{Binding SubcategoryName}"></Run>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock>
+                    <Run Text="Manufacturer: " FontWeight="Bold"></Run>
+                    <Run Text="{Binding ManufacturerName}"></Run>
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock>
+                    <Run Text="Description: " FontWeight="Bold"></Run>
+                    <Run Text="{Binding Description}"></Run>
+                                </TextBlock>
+                                <Label Margin="0" Padding="0" FontWeight="Bold">Quantity:</Label>
+                                <TextBox Margin="0, 10"  Padding="0, 5, 20, 5" HorizontalAlignment="Left"></TextBox>
+                            </StackPanel>
+                            <Button HorizontalAlignment="center" Padding="40, 10, 40, 10" Content="Add To Cart" Margin="15, 15, 15, 5" Grid.Column="1" Background="#CC181F" Foreground="White" Command="{Binding DataContext.OrderProductCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding ArticleNumber}"></Button>
+                            <Label HorizontalAlignment="center" Margin="0, 0, 0, 0">----------------------------------------------------------------------------------</Label>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

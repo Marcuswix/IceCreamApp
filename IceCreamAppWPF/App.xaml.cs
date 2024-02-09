@@ -45,6 +45,18 @@ namespace IceCreamAppWPF
                 services.AddScoped<BuyProductsView>();
                 services.AddScoped<BuyProductsViewModel>();
                 services.AddScoped<CustomerService>();
+                services.AddScoped<WelcomePageViewModel>();
+                services.AddScoped<AddCustomerViewModel>();
+                services.AddScoped<AddCustomerView>();
+                services.AddScoped<EditCustomerViewModel>();
+                services.AddScoped<EditCustomerView>();
+                services.AddScoped<AddProductViewModel>();
+                services.AddScoped<AddProductView>();
+                services.AddScoped<EditProductViewModel>();
+                services.AddScoped<EditProductView>();
+                services.AddScoped<LoginViewModel>();
+                services.AddScoped<LoginView>();
+
             }).Build();
         }
 

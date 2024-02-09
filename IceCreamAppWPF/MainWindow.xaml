@@ -7,14 +7,40 @@
         
         xmlns:viewmodels="clr-namespace:IceCreamAppWPF.ViewModels"
         xmlns:views="clr-namespace:IceCreamAppWPF.Views"
+
         
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="Main Menu" Height="450" Width="400">
+        Title="Main Menu" Height="740" Width="500">
     <Grid>
         <ContentControl Content="{Binding CurrentViewModel}">
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type viewmodels:MainViewModel}">
+                <DataTemplate DataType="{x:Type viewmodels:WelcomePageViewModel}">
+                    <views:WelcomePage />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:ProductListViewModel}">
                     <views:ProductPageView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:UserListViewModel}">
+                    <views:UserPageView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:BuyProductsViewModel}">
+                    <views:BuyProductsView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:AddCustomerViewModel}">
+                    <views:AddCustomerView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:EditCustomerViewModel}">
+                    <views:EditCustomerView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:AddProductViewModel}">
+                    <views:AddProductView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:EditProductViewModel}">
+                    <views:EditProductView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewmodels:LoginViewModel}">
+                    <views:LoginView/>
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>

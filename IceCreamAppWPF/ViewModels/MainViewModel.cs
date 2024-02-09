@@ -15,30 +15,7 @@ namespace IceCreamAppWPF.ViewModels
         public MainViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            CurrentViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+            CurrentViewModel = _serviceProvider.GetRequiredService<WelcomePageViewModel>();
         }
-
-        [RelayCommand]
-        public void NavigateToUserList()
-        {
-            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-            mainViewModel.CurrentViewModel = _serviceProvider.GetRequiredService<UserListViewModel>();
-        }
-
-        [RelayCommand]
-        public void NavigateToBuyProducts()
-        {
-            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-            mainViewModel.CurrentViewModel = _serviceProvider.GetRequiredService<BuyProductsViewModel>();
-        }
-
-        [RelayCommand]
-        public void NavigateToProductList() 
-        {
-            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-            mainViewModel.CurrentViewModel = _serviceProvider.GetRequiredService<ProductListViewModel>();
-            
-        }
-
     }
 }

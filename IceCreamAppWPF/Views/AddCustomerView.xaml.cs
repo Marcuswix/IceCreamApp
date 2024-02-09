@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace IceCreamAppWPF.Views
 {
     /// <summary>
-    /// Interaction logic for WelcomePage.xaml
+    /// Interaction logic for AddCustomerView.xaml
     /// </summary>
-    public partial class WelcomePage : UserControl
+    public partial class AddCustomerView : UserControl
     {
-        public WelcomePage()
+        public AddCustomerView()
         {
             InitializeComponent();
         }
